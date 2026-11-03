@@ -18,6 +18,8 @@ On Windows, run `pnpm desktop:dev`. Confirm the Electron window opens, the seven
 
 Retest on 2026-11-03: the bundled Electron 45.2.1 executable exited with Windows status `0x80000003` (`EXCEPTION_BREAKPOINT`) even for `electron.exe --version`, before this app's main process or renderer could be inspected. Vite itself started at `127.0.0.1:1420`, but the in-app browser timed out trying to reach it. This does not establish an application startup defect; the Electron desktop smoke check and screenshot review remain outstanding on a host where Electron can launch.
 
+Packaging retest on 2026-11-03: both the NSIS target (`npm run package:win`) and unpacked directory target (`npm exec electron-builder -- --win --dir`) failed when electron-builder attempted to resolve `github.com` (`getaddrinfo ENOTFOUND`). No distributable was produced.
+
 ## Release checks
 
 Before publishing a release:

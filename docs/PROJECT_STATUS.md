@@ -57,7 +57,7 @@ Milestone 3: physical HID discovery and safe connection.
 - Physical WebHID open/close: code added, but runtime connection against the attached keyboard was not verified in this session. No HID reports were sent.
 - `node scripts/generate-license-report.mjs`: passed; inventory generated for 346 package versions, with no missing license metadata (license texts and release bundle still require review).
 - Electron desktop launch: still not verified. On 2026-11-03 the bundled Electron 45.2.1 binary exited with Windows status `0x80000003` (`EXCEPTION_BREAKPOINT`) even for `--version`, before the application could load. The local Vite server started, but the in-app browser could not reach `127.0.0.1:1420` and timed out. Visual review and screenshots remain outstanding; this failure has not been attributed to application code.
-- Windows installer packaging: not completed. electron-builder could not resolve GitHub to fetch Windows packaging tools; no distributable has been verified.
+- Windows packaging: not completed. On 2026-11-03 both `npm run package:win` and `npm exec electron-builder -- --win --dir` reached the Windows packaging stage, then failed with `getaddrinfo ENOTFOUND github.com` while retrieving packaging resources. No installer or unpacked application bundle was produced.
 
 ## Known limitations
 
