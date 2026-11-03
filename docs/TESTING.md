@@ -16,7 +16,7 @@ The test suite currently covers profile document validation/storage and the simu
 
 On Windows, run `pnpm desktop:dev`. Confirm the Electron window opens, the seven navigation pages render, the 67-key diagram is aligned, and profile/lighting changes remain local. Try JSON export and import using a test profile. Confirm simulator disconnect/error states are labeled as simulated. Do not infer physical-device support from these checks.
 
-The current development environment returned a native `EXCEPTION_BREAKPOINT` while launching Electron 45.2.1, before a window could be inspected. This smoke check is outstanding and must pass on the release build host.
+Retest on 2026-11-03: the bundled Electron 45.2.1 executable exited with Windows status `0x80000003` (`EXCEPTION_BREAKPOINT`) even for `electron.exe --version`, before this app's main process or renderer could be inspected. Vite itself started at `127.0.0.1:1420`, but the in-app browser timed out trying to reach it. This does not establish an application startup defect; the Electron desktop smoke check and screenshot review remain outstanding on a host where Electron can launch.
 
 ## Release checks
 

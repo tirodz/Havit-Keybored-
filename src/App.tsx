@@ -3,6 +3,7 @@ import type { CSSProperties, FormEvent, ReactNode, ChangeEvent } from "react";
 import { Icon, type IconName } from "./components/Icon";
 import { KeyboardPreview } from "./components/KeyboardPreview";
 import { allKeyCodes, keyChoices } from "./domain/keyboard";
+import { formatHexColorDraft, isHexColorDraft, parseHexColor } from "./domain/colors";
 import {
   createDefaultDocument,
   createProfile,
@@ -333,6 +334,17 @@ function OverviewPage({ profile, device, activity, onNavigate, onSelectKey, sele
 
 function LightingPage({ profile, onChange, onApply, onSelectKey, selectedKey }: { profile: Profile; onChange: <K extends keyof Profile["lighting"]>(key: K, value: Profile["lighting"][K]) => void; onApply: () => void; onSelectKey: (key: string) => void; selectedKey: string | null }) {
   const effects: LightingEffect[] = ["Static", "Breathing", "Wave", "Reactive"];
+  const [hexDraft, setHexDraft] = useState(profile.lighting.color.toUpperCase());
+
+  useEffect(() => setHexDraft(profile.lighting.color.toUpperCase()), [profile.lighting.color]);
+
+  function updateHexDraft(value: string) {
+    if (!isHexColorDraft(value)) return;
+    setHexDraft(formatHexColorDraft(value));
+    const color = parseHexColor(value);
+    if (color) onChange("color", color);
+  }
+
   return <>
     <PageHeading eyebrow="DEVICE · SIMULATED" title="Lighting studio" description="Explore preview effects and color. Every change in this build stays in the offline simulator." action={<span className="sim-tag sim-tag--large">SIMULATOR ONLY</span>} />
     <div className="lighting-workspace">
@@ -340,7 +352,7 @@ function LightingPage({ profile, onChange, onApply, onSelectKey, selectedKey }: 
       <aside className="panel lighting-controls"><div className="section-kicker">PREVIEW CONTROLS</div><h2>Lighting</h2><p className="control-subtitle">These effect models are illustrative. Hardware support is unknown.</p>
         <label className="field-label" htmlFor="effect-choice">Effect model</label><div className="effect-grid">{effects.map((effect) => <button key={effect} className={`effect-card${profile.lighting.effect === effect ? " effect-card--active" : ""}`} onClick={() => onChange("effect", effect)} aria-pressed={profile.lighting.effect === effect}><span className={`effect-glyph effect-glyph--${effect.toLowerCase()}`}><i /><i /><i /></span><strong>{effect}</strong><span>{effect === "Static" ? "Single color" : effect === "Breathing" ? "Soft pulse" : effect === "Wave" ? "Flowing hue" : "Key response"}</span></button>)}</div>
         <div className="control-divider" />
-        <div className="field-row"><label className="field-label" htmlFor="preview-color">Preview color</label><span className="color-value">{profile.lighting.color.toUpperCase()}</span></div><div className="color-control"><input id="preview-color" type="color" value={profile.lighting.color} onChange={(event) => onChange("color", event.target.value)} aria-label="Choose preview color"/><div><strong>Accent color</strong><span>Used by this local preview</span></div><input className="color-hex" value={profile.lighting.color.toUpperCase()} onChange={(event) => /^#[\da-fA-F]{0,6}$/.test(event.target.value) && onChange("color", event.target.value.length === 7 ? event.target.value : profile.lighting.color)} aria-label="Hex color" maxLength={7}/></div>
+        <div className="field-row"><label className="field-label" htmlFor="preview-color">Preview color</label><span className="color-value">{profile.lighting.color.toUpperCase()}</span></div><div className="color-control"><input id="preview-color" type="color" value={profile.lighting.color} onChange={(event) => onChange("color", event.target.value)} aria-label="Choose preview color"/><div><strong>Accent color</strong><span>Used by this local preview</span></div><input className="color-hex" value={hexDraft} onChange={(event) => updateHexDraft(event.target.value)} onBlur={() => setHexDraft(profile.lighting.color.toUpperCase())} aria-label="Hex color" aria-describedby="hex-color-help" placeholder="#63A6FF" maxLength={7}/><span id="hex-color-help" className="visually-hidden">Enter a six-digit hexadecimal color, with or without the number sign.</span></div>
         <RangeControl id="brightness" label="Brightness" value={profile.lighting.brightness} minLabel="Dim" maxLabel="Bright" onChange={(value) => onChange("brightness", value)} />
         <RangeControl id="speed" label="Animation speed" value={profile.lighting.speed} minLabel="Slow" maxLabel="Fast" onChange={(value) => onChange("speed", value)} disabled={profile.lighting.effect === "Static"} />
         <div className="effect-description"><Icon name="spark" size={16} /><span>{effectDescriptions[profile.lighting.effect]}</span></div>

@@ -27,6 +27,7 @@ Milestone 3: physical HID discovery and safe connection.
 - Added an interactive desktop UI with overview, lighting, key editor, macros, profiles, diagnostics, and settings views.
 - Added a WebHID connect/close flow restricted to the host-observed KB874L VID/PID, with app-window-only Electron permission handling and explicit interface choice if multiple matching collections appear. Diagnostics now displays collection/report metadata exposed by WebHID. The path does not read or write report payloads and still needs runtime verification on the device.
 - Added profile-local settings, JSON import/export validation, and a deterministic offline simulator.
+- Fixed manual hex color entry in Lighting Studio: partial drafts now remain editable, a complete value updates the local preview, and incomplete drafts revert on blur. Added input normalization tests.
 - Added initial unit tests for profile validation/storage and simulator status/error handling.
 
 ## Hardware status
@@ -50,12 +51,12 @@ Milestone 3: physical HID discovery and safe connection.
 
 ## Verification and blockers
 
-- `npm run build`: passed on 2026-11-03 after adding the WebHID connection and collection-metadata view (TypeScript and Vite production build).
+- `npm test`: passed on 2026-11-03 after the hex color input fix (3 test files, 13 tests).
+- `npm run build`: passed on 2026-11-03 after the hex color input fix (TypeScript and Vite production build).
 - `pnpm build`: could not start because pnpm attempted a workspace/store symlink and Windows returned `EPERM`; `npm run build` succeeded using the installed dependencies.
-- Physical WebHID open/close: code added, but runtime connection against the attached keyboard was not verified in this session. No HID reports were sent. No new tests were run in this session.
-- `npm test`: passed on 2026-11-02 (2 test files, 10 tests).
+- Physical WebHID open/close: code added, but runtime connection against the attached keyboard was not verified in this session. No HID reports were sent.
 - `node scripts/generate-license-report.mjs`: passed; inventory generated for 346 package versions, with no missing license metadata (license texts and release bundle still require review).
-- Electron desktop launch: not verified. Electron 45.2.1 exited before showing a window (`EXCEPTION_BREAKPOINT` and, with diagnostic flags, access violation `0xC0000005`). Localhost serving was denied in this execution environment. Visual review and screenshots remain outstanding.
+- Electron desktop launch: still not verified. On 2026-11-03 the bundled Electron 45.2.1 binary exited with Windows status `0x80000003` (`EXCEPTION_BREAKPOINT`) even for `--version`, before the application could load. The local Vite server started, but the in-app browser could not reach `127.0.0.1:1420` and timed out. Visual review and screenshots remain outstanding; this failure has not been attributed to application code.
 - Windows installer packaging: not completed. electron-builder could not resolve GitHub to fetch Windows packaging tools; no distributable has been verified.
 
 ## Known limitations

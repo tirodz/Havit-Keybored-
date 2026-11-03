@@ -20,3 +20,4 @@ All notable changes to HAVIT Gaming Control Center are recorded here.
 - Reconciled installer and installed-driver hashes and updated protocol notes with the remaining transport differences.
 - Recovered the vendor's embedded lighting database schema and worker dispatch into the `04 23` table builder; added a read-only script to reproduce those findings.
 - Mapped a candidate `0x42B0F0` built-in lighting message from the `t_light_data` row fields, with RGB order and physical meaning still unverified.
+- Fixed manual hex color editing in Lighting Studio so partial input can be entered and invalid drafts are discarded cleanly.
