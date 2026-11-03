@@ -1,0 +1,63 @@
+{
+  "name": "havit-gaming-control-center",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Independent, simulator-first control center for HAVIT gaming peripherals.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tirodz/Havit-Keybored-.git"
+  },
+  "homepage": "https://github.com/tirodz/Havit-Keybored-#readme",
+  "type": "module",
+  "packageManager": "pnpm@11.17.0",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "licenses:report": "node scripts/generate-license-report.mjs",
+    "desktop": "electron .",
+    "desktop:dev": "node scripts/dev.mjs",
+    "package:win": "npm run build && electron-builder --win nsis"
+  },
+  "main": "electron/main.mjs",
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.2.1",
+    "jsdom": "29.1.0",
+    "typescript": "7.0.2",
+    "vite": "8.3.5",
+    "vitest": "5.1.0"
+  },
+  "build": {
+    "appId": "community.havit.control-center",
+    "productName": "HAVIT Gaming Control Center",
+    "asar": true,
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

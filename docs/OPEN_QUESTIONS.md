@@ -9,7 +9,7 @@
 
 ## Hardware identity
 
-- What VID/PID, interface numbers, usage page/usage, serial number, and report descriptor does the target keyboard actually expose?
+- What usage page/usage, serial number, and report descriptor does the target keyboard expose? PnP currently confirms VID/PID `05AC:024F`, revision `0102`, and interfaces `MI_00/01/02`; descriptor access remains blocked.
 - Are there multiple KB874L hardware revisions with different descriptors or capabilities?
 - Can identity be established without relying on the reported Apple VID `05AC` alone?
 
@@ -20,6 +20,9 @@
 - What are the confirmed meanings and valid parameter ranges for each command?
 - Is there a checksum, sequence number, acknowledgment, or read-back operation?
 - Which lighting modes and parameters are truly supported?
+- Does routine `0x44B9B0` implement the custom per-key lighting UI, what do its key-record bytes `+0x10..+0x12` represent, and what does its one-byte `0xFF` mask branch mean?
+- Which UI path maps a selected Static color to the settings object fields used by `0x42B0F0`, `0x434080`, or `0x44B8A0`?
+- Does the `04 23` table represent RGB channel values, and what channel order and valid key-index range does the target device expect?
 - Are key remapping and macros device-side, host-side, or absent?
 - Are profiles stored on the keyboard, in the official app, or both?
 

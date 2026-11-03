@@ -1,38 +1,42 @@
 # Architecture decision
 
-Status: provisional foundation decision, 2026-11-02.
+Status: Electron and React selected, 2026-11-02.
 
 ## Decision
 
-Start with a single Tauri desktop application using React and TypeScript for the UI and Rust for application services and device abstractions. Keep the HAVIT-specific implementation behind a stable device interface. Begin with simulator-only behavior; do not open or write to a physical device until identification and protocol work is complete.
+Build a Windows-first Electron desktop application with React and TypeScript. Electron hosts the UI in Chromium and provides a narrow native-process boundary. The app retains an offline simulator and now has a narrowly filtered physical HID connection check using Electron's WebHID support. The connection path is not yet verified at runtime on the keyboard, and it sends no hardware command.
 
-## Why this fits the current repository
+The user explicitly chose Electron, with a high visual-quality target. Electron gives the interface a consistent Chromium rendering target and broad frontend ecosystem. Its larger runtime footprint is an accepted trade-off for this product direction.
 
-- The repository has no existing application stack or code that must be preserved.
-- The project needs a rich interactive keyboard editor and a clear boundary between presentation and hardware operations.
-- Rust can host the native device boundary in the same application process without introducing a separate service.
-- The UI can remain useful in simulator mode while protocol research continues.
+## Process boundaries
 
-This is a starting decision, not a claim that a specific HID library or platform matrix has been validated. Select dependencies during scaffolding after checking their maintenance, Windows support, and licensing.
+- `electron/main.mjs` owns the window lifecycle and local application loading.
+- `electron/preload.cjs` exposes only non-sensitive runtime metadata. It does not expose Node.js, filesystem access, or raw IPC to the renderer.
+- `electron/main.mjs` permits HID access only for the app window and selects only the investigated VID/PID. Multiple matching interfaces require an explicit native dialog selection.
+- `src/services/havit-hid.ts` requests and opens the filtered HID interface, reports connection state, and closes it. It does not expose input/output report methods.
+- `src/` contains the React application, simulator model, and local profile operations.
+- Renderer settings use validated, versioned JSON stored in browser local storage. This is suitable for the current simulator milestone; a native persistence layer may replace it if requirements grow.
+- `src/services/device.ts` defines a high-level provider interface. The simulator is the only provider implemented today.
+- Any physical write backend must validate device identity, protocol inputs, timing, and responses before writes are enabled. The current WebHID connection check is discovery only and is not proof that a control report works.
+
+## Security defaults
+
+- `contextIsolation`, `sandbox`, and `webSecurity` are enabled.
+- `nodeIntegration` is disabled.
+- The app loads bundled local content or the loopback development server only.
+- Navigation to other origins and new windows are denied.
+- Content Security Policy restricts scripts and network connections.
+- The app makes no telemetry or application network requests.
 
 ## Alternatives considered
 
 | Option | Trade-off |
 | --- | --- |
-| C++ with Qt Quick/QML | Strong native UI and direct platform access; requires a larger C++/Qt stack for the desired UI and contributor workflow. Reconsider if Tauri HID support proves unsuitable. |
-| Tauri with React, TypeScript, and Rust | Good fit for interactive UI plus an in-process native boundary; requires careful review of HID library support and packaging. Selected provisionally. |
-| Electron with React and TypeScript | Mature UI ecosystem; larger runtime footprint and a native bridge is still needed for safe HID access. |
-| React frontend plus a C++ engine | Clear separation but adds process/protocol/deployment complexity without a demonstrated need. |
-
-## Boundaries
-
-- UI components express desired configuration and preview state; they do not construct HID packets.
-- Device services expose typed operations and capability/status data.
-- The simulator implements the same high-level interface as a physical backend.
-- The HAVIT backend owns matching, serialization, timing, and response handling.
-- Persistence is versioned and local. Start with JSON profiles unless later requirements establish a need for SQLite.
-- Logging is local and privacy-preserving; no telemetry or network service is needed by default.
+| C++ with Qt Quick/QML | Strong native UI and direct platform access, with a distinct contributor and frontend stack. |
+| Tauri with React and Rust | Smaller runtime footprint and an in-process native backend; not selected because the user explicitly requested Electron. |
+| Electron with React and TypeScript | Selected. Consistent Chromium UI and broad frontend ecosystem; carries a larger runtime footprint and requires a deliberately narrow preload boundary. |
+| React frontend plus a C++ engine | Adds a second process and deployment boundary before the device protocol establishes a concrete need. |
 
 ## Revisit when
 
-Reassess the decision if a maintained HID implementation cannot safely support the verified report type on the target Windows versions, if the desired platform support changes substantially, or if the UI requirements expose a clear limitation in Tauri.
+Reassess the device boundary when read-only descriptors and protocol evidence are available. Revisit Electron only if measured resource use, platform requirements, or security constraints materially change.
