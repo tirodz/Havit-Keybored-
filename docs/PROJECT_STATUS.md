@@ -29,6 +29,7 @@ Milestone 3: physical HID discovery and safe connection.
 - Added profile-local settings, JSON import/export validation, and a deterministic offline simulator.
 - Fixed manual hex color entry in Lighting Studio: partial drafts now remain editable, a complete value updates the local preview, and incomplete drafts revert on blur. Added input normalization tests.
 - Corrected simulator connectivity indicators for disconnected state; removed the unsupported notification badge; clarified that the Reactive preview is a visual accent pattern, not keypress detection; and labeled the effect controls accessibly.
+- Added the exact MIT texts for bundled Electron/React runtime components and configured Windows packaging to include runtime notices. Artifact inclusion is pending a successful package build; the project's own license remains undecided.
 - Added initial unit tests for profile validation/storage and simulator status/error handling.
 
 ## Hardware status

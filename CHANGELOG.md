@@ -22,3 +22,4 @@ All notable changes to HAVIT Gaming Control Center are recorded here.
 - Mapped a candidate `0x42B0F0` built-in lighting message from the `t_light_data` row fields, with RGB order and physical meaning still unverified.
 - Fixed manual hex color editing in Lighting Studio so partial input can be entered and invalid drafts are discarded cleanly.
 - Corrected simulator status indicators and preview labels, clarified that profile data is stored in the desktop app, and improved effect-selector accessibility.
+- Added bundled runtime dependency license texts and configured packaged apps to carry their notices.

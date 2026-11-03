@@ -4,7 +4,9 @@
 
 Application and build dependencies are declared with exact versions in `package.json`; the resolved dependency graph is recorded in `pnpm-lock.yaml`. The generated [`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) lists package license metadata found in the installed pnpm store. Regenerate it with `pnpm licenses:report` after installing dependencies and changing the lockfile.
 
-The inventory is not itself a replacement for license texts or notices required by individual licenses. A release checklist must review package license files, confirm which packages are shipped, and include every required notice in distributable artifacts.
+The Windows application bundles Electron 45.2.1, React 19.3.1, React DOM 19.3.1, and its transitive `scheduler` 0.28.0 runtime dependency. The React packages and Scheduler are MIT-licensed by Meta Platforms, Inc. and affiliates; see [`licenses/runtime/Meta-MIT.txt`](licenses/runtime/Meta-MIT.txt). Electron is MIT-licensed; see [`licenses/runtime/Electron-MIT.txt`](licenses/runtime/Electron-MIT.txt). The bundled Electron distribution also contains `LICENSES.chromium.html`, which carries Chromium and bundled third-party notices; preserve it in releases.
+
+The dependency inventory is not itself a replacement for license texts or notices required by individual packages. The `electron-builder` configuration is set to copy this notices file and the runtime license texts into the packaged app's `resources` directory; the output still needs verification when packaging can complete. Build-only packages listed in `THIRD_PARTY_LICENSES.md` are not intentionally shipped as application dependencies.
 
 ## Assets
 
