@@ -4,7 +4,7 @@ Last updated: 2026-11-03
 
 ## Scope and safety
 
-This report covers the supplied installer and the already-installed `DeviceDriver.exe`. The installer binary was not launched; its and the installed executable's static inspection was read-only. At the user's request, the installed vendor utility was opened and its UI was set to Static, RGB `255/0/0`, with “Colorful” off. Its on-screen key preview changed to red, but the physical LEDs were not independently observed. The HAVIT project app emitted no HID traffic and remains simulator-only.
+This report covers the supplied installer and the already-installed `DeviceDriver.exe`. The installer binary was not launched; its and the installed executable's static inspection was read-only. At the user's request, the installed vendor utility was opened and its UI was set to Static, RGB `255/0/0`, with “Colorful” off. Its on-screen key preview changed to red, but the physical LEDs were not independently observed. The HAVIT project's lighting/key actions still target the simulator; a connection-only WebHID diagnostic was added later, but it has not been runtime-verified and sends no report payloads.
 
 ## Locally reproduced findings
 
@@ -27,6 +27,8 @@ This report covers the supplied installer and the already-installed `DeviceDrive
 | Routine `0x414230` sends `04 18` and `04 17`, reads application settings named `fn_switch`, `sleep_time`, and `key_respondtime`, then constructs a `00 01` message with `AA 55` at message offsets `0x3E`–`0x3F` and sends `04 02` | Static disassembly and string references in the installed executable | High for message construction and settings names; command purpose is unknown, not established as lighting |
 | Routines `0x434080` and `0x44B8A0` send `04 18`, `04 13`, a data-dependent message, `04 02`, and `04 F0`; the message uses fields from an object, and stores word `0x55AA` at message offsets `0x0E`–`0x0F` (bytes `AA 55`) | Independently reproduced from the installed executable, SHA-256 `9e12ce7795189eda1a660b5dcf3e61b2954eca6d1bad5727aa14fea2774765f9` | High for message construction; meanings of object fields and whether these are lighting settings remain unknown |
 | Routine `0x44B9B0` sends `04 18`, then `04 23`, and allocates `0x258` bytes. With `[ebx+0x7AC] != 0`, it fills 4-byte slots with an index and three key-record bytes, places `AA 55` at offsets 574–575, and sends `0x240` bytes. With the flag zero, it writes one-byte `0xFF` marks, places `AA 55` at offsets 190–191, and sends `0xC0` bytes | Independently reproduced from the installed executable disassembly | High for the two encodings and send lengths; color-channel meaning, mask meaning, and UI-mode mapping remain unproven |
+| Embedded lighting database schema names `t_light_data` fields `mode`, `brightness`, `speed`, `direction`, `colorful`, `colorindex`, `color_value`, `config_func`, `reserved`, and `status`; custom tables include `t_customrgb_data(keycode, rgbvalue, light_mode, colortype, light_type)` and `t_userlightrgb_data(key_code, key_rgb)` | Read-only extraction of null-terminated SQL strings from the installed executable's `.rdata` | High for strings/column names; no proven mapping from database fields to wire bytes |
+| Worker code at `0x435137` gates `0x44B9B0` on dirty-state bit `0x10` at `[edi+0x7A4]` when `[edi+0x784] == 0`; the same worker calls `0x42B0F0` for bit `0x04` and `0x434080` for bit `0x100` | Direct-call and conditional-branch disassembly from the installed executable | High for dispatch conditions/call targets; bit meanings and UI labels remain unknown |
 | The large table send enters the chunk branch of `0x44EE60`, which retries failed feature writes but does not poll a response after each chunk; the following short `04 02` send uses the response helper and checks for byte `1` | Static disassembly of `0x44EE60` and `0x44B9B0` | High for control flow; protocol meaning of the response byte is unknown |
 | After reversing the Inno CALL/JMP transform on the extracted first PE, code ranges `0x44B9B0–0x44BE00`, `0x4513D0–0x451470`, `0x42B0F0–0x42B260`, and `0x434080–0x434180` match the installed executable byte-for-byte; the full executable hashes still differ | Read-only transform and byte-for-byte range comparison | High for these specific code ranges; not proof that every extracted/installed byte is identical |
 | Windows currently enumerates a connected USB keyboard as VID/PID `05AC:024F`, revision `0102`, interfaces `MI_00`, `MI_01`, and `MI_02`; the `MI_00` child describes itself as `Gaming Keyboard` | Read-only `pnputil /enum-devices` output from this host | High for this host's current PnP enumeration; does not prove every market variant |
@@ -36,15 +38,17 @@ The installer hash matches the value reported in the earlier investigation conve
 
 To repeat the read-only extraction/hash and code-range comparison, run `py -3 scripts/inspect-kb874l-installer.py <installer-path> --installed-driver <installed-DeviceDriver.exe> --installed-config <installed-config.xml>`. The script decompresses into memory and writes no extracted files.
 
+To reproduce the worker call-site and embedded lighting-schema string checks, install the optional analysis dependency with `py -m pip install capstone`, then run `py -3 scripts/inspect-kb874l-lighting-static.py <installed-DeviceDriver.exe>`. The script requires the recorded installed-driver SHA-256, disassembles the installed file only, and makes no device calls.
+
 ## Findings reported by the earlier investigation
 
 The earlier report states that the installer is Inno Setup 6.1.0 Unicode and contains an x86 MFC/C++ application named `DeviceDriver.exe`, `mui.dll`, XML configuration/layout files, SQLite-related components, and Windows HID feature-report communication. It further reports VID/PID `05AC:024F`, interface `MI_00`, a 65-byte report, and command bytes `0x18`, `0x17`, `0x13`, `0x02`, and `0xF0`.
 
-The installer-specific details remain **preliminary reported findings**. Static analysis of the installed executable now reproduces a dynamic HID API loader, a 65-byte `HidD_SetFeature` call, a zero report-ID byte followed by a 64-byte payload, and several command-like prefixes. This is stronger software evidence, but command semantics, checksums, full valid packet structures, the actual HID report descriptor, and on-device behavior have not been established. The installer payload has not yet been unpacked locally. The connected host currently exposes the same VID/PID and revision, but identity matching should still include interface and usage checks when descriptor access becomes available. Do not send command-like byte sequences as guessed reports.
+The installer-specific details remain **preliminary reported findings** unless called out in the locally reproduced section above. Static analysis of the installed executable reproduces a dynamic HID API loader, a 65-byte `HidD_SetFeature` call, a zero report-ID byte followed by a 64-byte payload, several command-like prefixes, SQLite lighting schemas, and a dirty-state dispatch into the `04 23` table builder. The installer payload has since been decompressed in memory and compared with the installed executable as documented above. Command semantics, checksums, complete valid packet structures, the physical report descriptor, and on-device behavior remain unestablished. The connected host currently exposes the same VID/PID and revision as the vendor config, but interface usage and report capabilities still need runtime verification. Do not send command-like byte sequences as guessed reports.
 
 ## Not established
 
-- Actual USB descriptors and whether the reported VID/PID identify the target keyboard.
+- Raw USB/HID descriptors and report capabilities. PnP identity `05AC:024F` on this host matches the vendor config, but the report descriptor/usage values remain unavailable.
 - HID report descriptor, report ID, payload layout, command semantics, checksum, acknowledgment behavior, or timing.
 - Whether the `04 23` table is specifically the custom per-key lighting upload, and what each record byte means.
 - Which UI handler invokes routine `0x44B9B0` and how user-selected color values reach the three record bytes.
@@ -55,7 +59,7 @@ The installer-specific details remain **preliminary reported findings**. Static 
 
 ## Next safe investigation steps
 
-1. Trace the producer of the per-key record bytes and the UI dispatch path into `0x44B9B0` using the installed executable.
+1. Trace how `t_customrgb_data` records and selected UI colors populate the per-key records consumed by `0x44B9B0`.
 2. Inspect the remaining `0x44B9B0` send/ack path and establish exact table offsets, sent lengths, and mode-selection inputs.
 3. If static analysis cannot link selected Static red to reports, capture vendor-software USB traffic while changing one lighting value at a time; do not inject reports.
 4. Capture the physical HID report descriptor through a read-only method before enabling project device writes.

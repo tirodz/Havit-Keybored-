@@ -18,6 +18,8 @@ Milestone 3: physical HID discovery and safe connection.
 - Static inspection recovered command-like payload prefixes, but not full semantics. Direct descriptor-only HID access returned Windows error 5; no report descriptor was captured.
 - Traced routine `0x414230`: it sends `04 18` and `04 17`, reads `fn_switch`, `sleep_time`, and `key_respondtime`, then builds a `00 01` message with an `AA 55` trailer and sends `04 02`; the command purpose is unknown.
 - Independently reproduced a `04 23` report builder at `0x44B9B0`: one branch sends 576 bytes of 4-byte per-index records; the other sends a 192-byte one-byte `0xFF` mask. Both reserve the last two sent bytes for `AA 55`. The following short `04 02` send checks response byte `1`; large chunks are not individually response-polled. This is a per-key lighting candidate, but color channels, mask semantics, and Static-mode mapping remain unknown.
+- Recovered embedded SQLite schema strings for built-in and custom lighting records, and traced worker dirty bit `0x10` to the `0x44B9B0` builder (with bits `0x04` and `0x100` dispatching to other routines). This narrows the static trace but does not identify the UI mode or transmitted RGB channel mapping.
+- Added `scripts/inspect-kb874l-lighting-static.py` to reproduce the driver worker call-site and schema-string findings against the pinned installed-driver hash.
 - Corrected the byte order of marker words: `mov word ..., 0x55AA` yields bytes `AA 55` on x86 little-endian.
 - Confirmed the app's layout XML defines 67 key positions and a 17-column, 6-row canvas; reproduced the geometry without copying its image assets.
 - Selected Electron and React at the user's direction; added a secure main/preload/renderer boundary.

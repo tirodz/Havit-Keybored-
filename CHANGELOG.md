@@ -18,3 +18,4 @@ All notable changes to HAVIT Gaming Control Center are recorded here.
 - Added a diagnostics view of HID usage collections and input/output/feature report IDs exposed by the selected interface.
 - Restricted Electron HID permissions to the app window; the connection flow opens/closes an interface and sends no reports.
 - Reconciled installer and installed-driver hashes and updated protocol notes with the remaining transport differences.
+- Recovered the vendor's embedded lighting database schema and worker dispatch into the `04 23` table builder; added a read-only script to reproduce those findings.
