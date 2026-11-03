@@ -35,7 +35,7 @@ const effectDescriptions: Record<LightingEffect, string> = {
   Static: "One color across the preview.",
   Breathing: "A slow brightness pulse in the preview.",
   Wave: "A flowing color variation across the preview.",
-  Reactive: "A varied accent pattern in the preview.",
+  Reactive: "A varied accent pattern across preview keys.",
 };
 
 function timeLabel(value = new Date()) {
@@ -50,7 +50,7 @@ function App() {
   const [physicalDeviceBusy, setPhysicalDeviceBusy] = useState(false);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [activity, setActivity] = useState<ActivityItem[]>([
-    { id: "welcome", text: "Offline simulator ready", ok: true, time: timeLabel() },
+    { id: "welcome", text: "Offline simulator session ready", ok: true, time: timeLabel() },
   ]);
   const [notice, setNotice] = useState<{ text: string; error?: boolean } | null>(null);
   const [reducedMotion, setReducedMotion] = useState(() => localStorage.getItem("havit-control-center.reduce-motion") === "true");
@@ -64,7 +64,7 @@ function App() {
 
   useEffect(() => {
     try { writeStoredDocument(document); }
-    catch { showNotice("Could not save profile data in this browser.", true); }
+    catch { showNotice("Could not save profile data in local app storage.", true); }
   }, [document]);
 
   useEffect(() => {
@@ -270,7 +270,7 @@ function App() {
             <div className={`connection-pill${device.status === "connected" ? " connection-pill--connected" : ""}`}><span className="status-led" />{device.status === "connected" ? "Simulator active" : "Disconnected"}</div>
             <button className="outline-button connection-action" onClick={toggleConnection}><Icon name="plug" size={16} />{device.status === "connected" ? "Disconnect" : "Reconnect"}</button>
             <div className="topbar-divider" />
-            <button className="icon-button top-icon" aria-label="Open diagnostics" title="Open diagnostics" onClick={() => setPage("Diagnostics")}><Icon name="bell" size={18} /><span className="notification-dot" /></button>
+            <button className="icon-button top-icon" aria-label="Open diagnostics" title="Open diagnostics" onClick={() => setPage("Diagnostics")}><Icon name="activity" size={18} /></button>
             <button className="profile-chip" onClick={() => setPage("Profiles")}><span className="profile-avatar profile-avatar--small">{activeProfile.name.slice(0, 1).toUpperCase()}</span><span>{activeProfile.name}</span><Icon name="chevron" size={14} /></button>
           </div>
         </header>
@@ -302,7 +302,7 @@ function OverviewPage({ profile, device, activity, onNavigate, onSelectKey, sele
   return <>
     <PageHeading eyebrow="DEVICE OVERVIEW" title="Make it yours." description="Your keyboard workspace, running safely in offline simulation." action={<button className="primary-button" onClick={() => onNavigate("Lighting")}><Icon name="spark" size={17} />Open lighting studio</button>} />
     <div className="stats-row">
-      <div className="stat-card"><div className="stat-icon stat-icon--blue"><Icon name="keyboard" /></div><div><span>DEVICE</span><strong>KB874L</strong><small>Physical support unverified</small></div><div className="stat-tail"><span className="status-led status-led--on" />SIM</div></div>
+      <div className="stat-card"><div className="stat-icon stat-icon--blue"><Icon name="keyboard" /></div><div><span>DEVICE</span><strong>KB874L</strong><small>Physical support unverified</small></div><div className="stat-tail"><span className={`status-led${device.status === "connected" ? " status-led--on" : ""}`} />SIM</div></div>
       <div className="stat-card"><div className="stat-icon stat-icon--violet"><Icon name="layers" /></div><div><span>ACTIVE PROFILE</span><strong>{profile.name}</strong><small>{profile.macros.length} saved macros</small></div><button className="stat-link" onClick={() => onNavigate("Profiles")} aria-label="Manage profiles"><Icon name="arrow" /></button></div>
       <div className="stat-card"><div className="stat-icon stat-icon--mint"><Icon name="keyboard" /></div><div><span>KEY ASSIGNMENTS</span><strong>{assigned}<em> / {allKeyCodes.length}</em></strong><small>Profile-local simulation</small></div><button className="stat-link" onClick={() => onNavigate("Key Studio")} aria-label="Open key studio"><Icon name="arrow" /></button></div>
     </div>
@@ -322,9 +322,9 @@ function OverviewPage({ profile, device, activity, onNavigate, onSelectKey, sele
           <div className="summary-actions"><button className="outline-button outline-button--wide" onClick={() => onNavigate("Lighting")}><Icon name="spark" size={16} />Adjust preview</button><button className="outline-button outline-button--square" aria-label="Edit profile" title="Edit profile" onClick={() => onNavigate("Profiles")}><Icon name="layers" size={16} /></button></div>
         </section>
         <section className="panel recent-panel">
-          <div className="panel-heading"><div><div className="section-kicker">LOCAL ACTIVITY</div><h2>Recent changes</h2></div><button className="text-button" onClick={() => onNavigate("Diagnostics")}>View all <Icon name="arrow" size={15} /></button></div>
+          <div className="panel-heading"><div><div className="section-kicker">LOCAL ACTIVITY</div><h2>Simulator activity</h2></div><button className="text-button" onClick={() => onNavigate("Diagnostics")}>View all <Icon name="arrow" size={15} /></button></div>
           <div className="activity-list">{activity.slice(0, 4).map((entry) => <div className="activity-item" key={entry.id}><span className={`activity-indicator${entry.ok ? "" : " activity-indicator--error"}`}><Icon name={entry.ok ? "check" : "alert"} size={13} /></span><div><strong>{entry.text}</strong><span>{entry.time} · simulator</span></div></div>)}</div>
-          <div className="device-status-card"><div className="device-status-icon"><Icon name="plug" size={17} /></div><div><strong>{device.status === "connected" ? "Simulator is ready" : "Simulator disconnected"}</strong><span>{device.lastAction}</span></div><span className="status-led status-led--on" /></div>
+          <div className="device-status-card"><div className="device-status-icon"><Icon name="plug" size={17} /></div><div><strong>{device.status === "connected" ? "Simulator is ready" : "Simulator disconnected"}</strong><span>{device.lastAction}</span></div><span className={`status-led${device.status === "connected" ? " status-led--on" : ""}`} /></div>
         </section>
       </aside>
     </div>
@@ -350,7 +350,7 @@ function LightingPage({ profile, onChange, onApply, onSelectKey, selectedKey }: 
     <div className="lighting-workspace">
       <section className="panel lighting-preview-panel"><div className="panel-heading"><div><div className="section-kicker">PREVIEW CANVAS</div><h2>Your keyboard, in color</h2></div><span className="mini-badge"><span className="status-led status-led--on" /> LIVE</span></div><KeyboardPreview profile={profile} selectedKey={selectedKey} onSelectKey={onSelectKey} /><div className="preview-caption"><span>Preview updates as you edit</span><span>Profile: <strong>{profile.name}</strong></span></div></section>
       <aside className="panel lighting-controls"><div className="section-kicker">PREVIEW CONTROLS</div><h2>Lighting</h2><p className="control-subtitle">These effect models are illustrative. Hardware support is unknown.</p>
-        <label className="field-label" htmlFor="effect-choice">Effect model</label><div className="effect-grid">{effects.map((effect) => <button key={effect} className={`effect-card${profile.lighting.effect === effect ? " effect-card--active" : ""}`} onClick={() => onChange("effect", effect)} aria-pressed={profile.lighting.effect === effect}><span className={`effect-glyph effect-glyph--${effect.toLowerCase()}`}><i /><i /><i /></span><strong>{effect}</strong><span>{effect === "Static" ? "Single color" : effect === "Breathing" ? "Soft pulse" : effect === "Wave" ? "Flowing hue" : "Key response"}</span></button>)}</div>
+        <span className="field-label">Effect model</span><div className="effect-grid" role="group" aria-label="Effect model">{effects.map((effect) => <button key={effect} className={`effect-card${profile.lighting.effect === effect ? " effect-card--active" : ""}`} onClick={() => onChange("effect", effect)} aria-pressed={profile.lighting.effect === effect}><span className={`effect-glyph effect-glyph--${effect.toLowerCase()}`}><i /><i /><i /></span><strong>{effect}</strong><span>{effect === "Static" ? "Single color" : effect === "Breathing" ? "Soft pulse" : effect === "Wave" ? "Flowing hue" : "Accent pattern"}</span></button>)}</div>
         <div className="control-divider" />
         <div className="field-row"><label className="field-label" htmlFor="preview-color">Preview color</label><span className="color-value">{profile.lighting.color.toUpperCase()}</span></div><div className="color-control"><input id="preview-color" type="color" value={profile.lighting.color} onChange={(event) => onChange("color", event.target.value)} aria-label="Choose preview color"/><div><strong>Accent color</strong><span>Used by this local preview</span></div><input className="color-hex" value={hexDraft} onChange={(event) => updateHexDraft(event.target.value)} onBlur={() => setHexDraft(profile.lighting.color.toUpperCase())} aria-label="Hex color" aria-describedby="hex-color-help" placeholder="#63A6FF" maxLength={7}/><span id="hex-color-help" className="visually-hidden">Enter a six-digit hexadecimal color, with or without the number sign.</span></div>
         <RangeControl id="brightness" label="Brightness" value={profile.lighting.brightness} minLabel="Dim" maxLabel="Bright" onChange={(value) => onChange("brightness", value)} />
@@ -399,7 +399,7 @@ function ProfilesPage({ document, onSelect, onAdd, onDelete, onExport, onImport 
     <PageHeading eyebrow="LOCAL CONFIGURATION" title="Profiles" description="Switch between local configuration sets and export or import them as validated JSON." action={<div className="profile-actions"><button className="outline-button" onClick={onImport}><Icon name="upload" size={16} />Import</button><button className="outline-button" onClick={onExport}><Icon name="download" size={16} />Export all</button></div>} />
     <section className="panel profile-create-panel"><form className="profile-create-form" onSubmit={submit}><div className="create-profile-icon"><Icon name="plus" size={19} /></div><div className="create-profile-copy"><strong>Create a profile</strong><span>Start with a clean local configuration.</span></div><input className="text-input" placeholder="Profile name" aria-label="New profile name" value={name} onChange={(event) => setName(event.target.value)} maxLength={40} /><button className="primary-button" type="submit">Create profile</button></form></section>
     <div className="profile-grid">{document.profiles.map((profile) => {const active = profile.id === document.activeProfileId; return <article key={profile.id} className={`panel profile-card${active ? " profile-card--active" : ""}`}><div className="profile-card-top"><div className="profile-card-avatar" style={{ "--profile-color": profile.lighting.color } as CSSProperties}>{profile.name.slice(0, 1).toUpperCase()}</div><div className="profile-card-actions">{active && <span className="active-badge"><Icon name="check" size={13} />ACTIVE</span>}<button className="icon-button danger-icon" onClick={() => onDelete(profile.id)} aria-label={`Delete ${profile.name}`} title="Delete profile"><Icon name="trash" size={16} /></button></div></div><h2>{profile.name}</h2><div className="profile-date">Created {new Date(profile.createdAt).toLocaleDateString()}</div><div className="profile-specs"><div><span className="color-orb color-orb--small" style={{ background: profile.lighting.color }} /><span>{profile.lighting.effect}</span></div><div><Icon name="keyboard" size={15} /><span>{Object.keys(profile.keyMap).length} key maps</span></div><div><Icon name="command" size={15} /><span>{profile.macros.length} macros</span></div></div><button className={active ? "outline-button outline-button--wide profile-select" : "primary-button profile-select"} onClick={() => onSelect(profile.id)} disabled={active}>{active ? "Current profile" : "Use this profile"}</button></article>; })}</div>
-    <div className="storage-footnote"><Icon name="layers" size={16} /><span>Stored locally in this browser profile. These settings are not written to the keyboard.</span></div>
+    <div className="storage-footnote"><Icon name="layers" size={16} /><span>Stored locally in this app on this computer. These settings are not written to the keyboard.</span></div>
   </>;
 }
 
@@ -417,7 +417,7 @@ function SettingsPage({ reducedMotion, onReducedMotion, onExport, onImport, onRe
   return <>
     <PageHeading eyebrow="APPLICATION" title="Settings" description="Configure local app behavior and manage your profile data." />
     <div className="settings-list"><section className="panel settings-card"><div className="settings-card-icon"><Icon name="sun" /></div><div className="settings-card-copy"><strong>Reduced motion</strong><span>Limit decorative transitions and animated previews.</span></div><button className={`toggle${reducedMotion ? " toggle--on" : ""}`} role="switch" aria-checked={reducedMotion} onClick={() => onReducedMotion(!reducedMotion)}><span /></button></section>
-      <section className="panel settings-section"><div className="settings-section-heading"><div><div className="section-kicker">PROFILE DATA</div><h2>Import and export</h2><p>Your profiles stay in this browser unless you export them.</p></div><Icon name="layers" size={21} /></div><div className="settings-action-row"><button className="outline-button" onClick={onImport}><Icon name="upload" size={16} />Import profile JSON</button><button className="outline-button" onClick={onExport}><Icon name="download" size={16} />Export all profiles</button></div></section>
+      <section className="panel settings-section"><div className="settings-section-heading"><div><div className="section-kicker">PROFILE DATA</div><h2>Import and export</h2><p>Your profiles stay in this app on this computer unless you export them.</p></div><Icon name="layers" size={21} /></div><div className="settings-action-row"><button className="outline-button" onClick={onImport}><Icon name="upload" size={16} />Import profile JSON</button><button className="outline-button" onClick={onExport}><Icon name="download" size={16} />Export all profiles</button></div></section>
       <section className="panel settings-section settings-danger"><div className="settings-section-heading"><div><div className="section-kicker">LOCAL DATA</div><h2>Reset application data</h2><p>Remove saved profiles and return to the default simulator setup.</p></div><Icon name="trash" size={21} /></div><button className="danger-button" onClick={onReset}><Icon name="trash" size={16} />Reset local data</button></section>
       <section className="panel about-card"><div className="about-mark">H</div><div className="about-copy"><div className="section-kicker">ABOUT THIS APPLICATION</div><h2>HAVIT Gaming Control Center <span>0.1.0</span></h2><p>An independent community project. Not affiliated with, endorsed by, or an official application of HAVIT. “HAVIT” and “KB874L” are used to identify the compatibility target only.</p><div className="about-meta"><span>Windows desktop · Electron</span><span>·</span><span>Simulator-first</span><span>·</span><span>No telemetry</span></div></div></section>
     </div>

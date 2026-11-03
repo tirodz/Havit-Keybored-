@@ -12,4 +12,4 @@ No private email address or response-time guarantee is published because none ha
 
 ## Scope notes
 
-The app currently has no physical HID backend. It stores simulator profiles in local browser storage and imports user-selected JSON files after validation. Please include the app version, operating system, reproduction steps, and relevant logs, while removing secrets and personal data.
+The app currently has no physical HID backend. It stores simulator profiles in local application data and imports user-selected JSON files after validation. Please include the app version, operating system, reproduction steps, and relevant logs, while removing secrets and personal data.

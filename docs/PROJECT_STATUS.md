@@ -28,6 +28,7 @@ Milestone 3: physical HID discovery and safe connection.
 - Added a WebHID connect/close flow restricted to the host-observed KB874L VID/PID, with app-window-only Electron permission handling and explicit interface choice if multiple matching collections appear. Diagnostics now displays collection/report metadata exposed by WebHID. The path does not read or write report payloads and still needs runtime verification on the device.
 - Added profile-local settings, JSON import/export validation, and a deterministic offline simulator.
 - Fixed manual hex color entry in Lighting Studio: partial drafts now remain editable, a complete value updates the local preview, and incomplete drafts revert on blur. Added input normalization tests.
+- Corrected simulator connectivity indicators for disconnected state; removed the unsupported notification badge; clarified that the Reactive preview is a visual accent pattern, not keypress detection; and labeled the effect controls accessibly.
 - Added initial unit tests for profile validation/storage and simulator status/error handling.
 
 ## Hardware status

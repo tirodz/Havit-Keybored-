@@ -80,7 +80,7 @@ Packaged artifacts are written to `release/`. Packaging and application startup 
 
 ## Safety and privacy
 
-The application can open the matching physical HID interface for connection checks, but sends no commands to the keyboard. Profiles are stored in the app's local browser storage. JSON import validates profile data before it is used. No telemetry is included. Keep the physical write path disabled until the protocol has been captured and validated with controlled tests.
+The application can open the matching physical HID interface for connection checks, but sends no commands to the keyboard. Profiles are stored in local application data on this computer. JSON import validates profile data before it is used. No telemetry is included. Keep the physical write path disabled until the protocol has been captured and validated with controlled tests.
 
 Report security issues privately as described in [SECURITY.md](SECURITY.md). See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 

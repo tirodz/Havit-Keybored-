@@ -18,6 +18,7 @@ describe("offline simulator", () => {
   it("rejects operations while disconnected", async () => {
     const device = new SimulatorDevice();
     await device.disconnect();
+    expect(device.snapshot().status).toBe("disconnected");
     const result = await device.applyKeyMap("KeyA", "B");
     expect(result.ok).toBe(false);
     expect(result.message).toMatch(/disconnected/i);
