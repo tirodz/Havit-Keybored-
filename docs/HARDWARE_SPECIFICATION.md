@@ -15,6 +15,8 @@ The installed application's `config.xml` identifies its UI model as `KB874L RGB 
 
 The `rgb-keyboard.xml` file defines 67 key positions across a 17-column, 6-row canvas (800 × 300 coordinates). Its bundled keyboard preview image agrees with the compact 67-key layout. This establishes the software's modeled layout, not physical alignment or support for every control.
 
+The same layout XML declares `default_mode="11"`, `default_brightness="5"`, and `default_speed="3"`, with brightness and speed maxima of `5`. These are vendor application defaults, not a verified mode map: they do not establish that mode `11` means Static, that these values are sent directly to the keyboard, or what any value does on hardware.
+
 The [official HAVIT product page](https://havitsmart.com/products/havit-gaming-mechanical-keyboard-kb874l) also lists a 67-key layout, USB connection, 20 lighting effects, adjustable lighting mode and brightness, and dimensions of 321 × 113 × 40 mm. Its FAQ describes standard USB plug-and-play operation without a required driver/software installation. These are manufacturer-published claims, not a protocol capability matrix or a physical test result.
 
 ## Capability status
