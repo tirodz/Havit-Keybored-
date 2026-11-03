@@ -14,7 +14,7 @@ This is not an official HAVIT product and is not affiliated with or endorsed by 
 - Key Studio and Macro Studio editors for local profile data.
 - Multiple local profiles, JSON import/export, and input validation.
 - Offline simulator with explicit connection and error states.
-- Physical HID interface connection and close flow, restricted to the reported KB874L USB ID; no feature reports are sent.
+- Physical HID interface connection and close flow, restricted to the reported KB874L USB ID; displays collection/report metadata exposed by WebHID and sends no reports.
 - Diagnostics and settings views; no telemetry or application network calls.
 
 The four lighting previews are application effects. They are not claims about the keyboard's 20 manufacturer-advertised onboard modes.

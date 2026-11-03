@@ -22,7 +22,7 @@ Milestone 3: physical HID discovery and safe connection.
 - Confirmed the app's layout XML defines 67 key positions and a 17-column, 6-row canvas; reproduced the geometry without copying its image assets.
 - Selected Electron and React at the user's direction; added a secure main/preload/renderer boundary.
 - Added an interactive desktop UI with overview, lighting, key editor, macros, profiles, diagnostics, and settings views.
-- Added a WebHID connect/close flow restricted to the host-observed KB874L VID/PID, with app-window-only Electron permission handling and explicit interface choice if multiple matching collections appear. The path does not read or write reports and still needs runtime verification on the device.
+- Added a WebHID connect/close flow restricted to the host-observed KB874L VID/PID, with app-window-only Electron permission handling and explicit interface choice if multiple matching collections appear. Diagnostics now displays collection/report metadata exposed by WebHID. The path does not read or write report payloads and still needs runtime verification on the device.
 - Added profile-local settings, JSON import/export validation, and a deterministic offline simulator.
 - Added initial unit tests for profile validation/storage and simulator status/error handling.
 
@@ -47,7 +47,7 @@ Milestone 3: physical HID discovery and safe connection.
 
 ## Verification and blockers
 
-- `npm run build`: passed on 2026-11-03 after adding the WebHID connection flow (TypeScript and Vite production build).
+- `npm run build`: passed on 2026-11-03 after adding the WebHID connection and collection-metadata view (TypeScript and Vite production build).
 - `pnpm build`: could not start because pnpm attempted a workspace/store symlink and Windows returned `EPERM`; `npm run build` succeeded using the installed dependencies.
 - Physical WebHID open/close: code added, but runtime connection against the attached keyboard was not verified in this session. No HID reports were sent. No new tests were run in this session.
 - `npm test`: passed on 2026-11-02 (2 test files, 10 tests).

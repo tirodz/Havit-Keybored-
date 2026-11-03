@@ -15,5 +15,6 @@ All notable changes to HAVIT Gaming Control Center are recorded here.
 ## Unreleased — 2026-11-03
 
 - Added a KB874L-filtered WebHID connection check in Diagnostics with explicit interface selection when multiple matches are present.
+- Added a diagnostics view of HID usage collections and input/output/feature report IDs exposed by the selected interface.
 - Restricted Electron HID permissions to the app window; the connection flow opens/closes an interface and sends no reports.
 - Reconciled installer and installed-driver hashes and updated protocol notes with the remaining transport differences.

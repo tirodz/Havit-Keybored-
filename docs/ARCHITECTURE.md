@@ -13,7 +13,7 @@ The user explicitly chose Electron, with a high visual-quality target. Electron 
 - `electron/main.mjs` owns the window lifecycle and local application loading.
 - `electron/preload.cjs` exposes only non-sensitive runtime metadata. It does not expose Node.js, filesystem access, or raw IPC to the renderer.
 - `electron/main.mjs` permits HID access only for the app window and selects only the investigated VID/PID. Multiple matching interfaces require an explicit native dialog selection.
-- `src/services/havit-hid.ts` requests and opens the filtered HID interface, reports connection state, and closes it. It does not expose input/output report methods.
+- `src/services/havit-hid.ts` requests and opens the filtered HID interface, reports connection state, displays collection/report metadata exposed by WebHID, and closes it. It does not expose input/output report methods.
 - `src/` contains the React application, simulator model, and local profile operations.
 - Renderer settings use validated, versioned JSON stored in browser local storage. This is suitable for the current simulator milestone; a native persistence layer may replace it if requirements grow.
 - `src/services/device.ts` defines a high-level provider interface. The simulator is the only provider implemented today.
