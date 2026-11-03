@@ -92,6 +92,14 @@ def main() -> None:
     for instruction in decoder.disasm(va_bytes(data, sections, 0x435103, 0x8A), 0x435103):
         print(f"  {instruction.address:#010x}: {instruction.mnemonic:7} {instruction.op_str}")
 
+    print("t_light_data row extraction at 0x004085BF:")
+    for instruction in decoder.disasm(va_bytes(data, sections, 0x4085BF, 0xE0), 0x4085BF):
+        print(f"  {instruction.address:#010x}: {instruction.mnemonic:7} {instruction.op_str}")
+
+    print("0x42B0F0 message builder and send sequence:")
+    for instruction in decoder.disasm(va_bytes(data, sections, 0x42B15F, 0xA0), 0x42B15F):
+        print(f"  {instruction.address:#010x}: {instruction.mnemonic:7} {instruction.op_str}")
+
     print("embedded SQLite lighting schema strings:")
     for prefix in SQL_PREFIXES:
         offset = data.find(prefix)

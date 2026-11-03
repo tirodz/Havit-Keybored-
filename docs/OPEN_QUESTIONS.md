@@ -22,13 +22,14 @@
 
 ## Protocol and capabilities
 
-- What are the exact feature-report fields and report ID?
+- What are the physical report descriptor/usage and report capabilities? The vendor software uses report ID zero in a 65-byte host buffer; the device descriptor is still unavailable.
 - Which commands are read-only, and which change device state?
 - What are the confirmed meanings and valid parameter ranges for each command?
 - Is there a checksum, sequence number, acknowledgment, or read-back operation?
 - Which lighting modes and parameters are truly supported?
 - Does the dirty-state bit `0x10` and dispatch into `0x44B9B0` correspond to the custom per-key lighting UI? What do key-record bytes `+0x10..+0x12` and the one-byte `0xFF` mask branch mean?
-- Which UI path maps a selected Static color to the settings object fields used by `0x42B0F0`, `0x434080`, or `0x44B8A0`?
+- Does the `0x42B0F0` candidate correspond to the Static UI mode, and what mode ID and RGB channel order does it use?
+- Which object fields do `0x434080` and `0x44B8A0` serialize, and which UI controls populate them?
 - Does the `04 23` table represent RGB channel values, and what channel order and valid key-index range does the target device expect?
 - Are key remapping and macros device-side, host-side, or absent?
 - Are profiles stored on the keyboard, in the official app, or both?

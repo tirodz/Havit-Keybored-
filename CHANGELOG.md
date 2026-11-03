@@ -19,3 +19,4 @@ All notable changes to HAVIT Gaming Control Center are recorded here.
 - Restricted Electron HID permissions to the app window; the connection flow opens/closes an interface and sends no reports.
 - Reconciled installer and installed-driver hashes and updated protocol notes with the remaining transport differences.
 - Recovered the vendor's embedded lighting database schema and worker dispatch into the `04 23` table builder; added a read-only script to reproduce those findings.
+- Mapped a candidate `0x42B0F0` built-in lighting message from the `t_light_data` row fields, with RGB order and physical meaning still unverified.

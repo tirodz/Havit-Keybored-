@@ -27,7 +27,7 @@ The [official HAVIT product page](https://havitsmart.com/products/havit-gaming-m
 | Project-app device detection | WebHID connection path implemented; runtime verification pending | Filtered to host-confirmed `05AC:024F`; opens/closes only and sends no reports |
 | Built-in lighting modes | Manufacturer-listed | 20 effects are advertised; application controls and protocol remain under investigation |
 | Brightness control | Manufacturer-listed | Adjustable brightness is advertised; app transport remains unknown |
-| Custom RGB software control | Static vendor command candidates found; physical behavior unknown | No Static-mode/color-picker report has been identified or validated |
+| Custom RGB software control | Static vendor command candidate partly mapped; physical behavior unknown | `0x42B0F0` assembles a data message from `t_light_data`, including low 24 bits of `color_value`; UI mode mapping and RGB byte order are unknown |
 | Per-key RGB | Vendor has a per-key table upload candidate | `04 23` path builds four-byte slots with a key index and three record bytes; channel order, UI mapping, and hardware result remain unverified |
 | Key remapping | UI exposed; physical support unknown | The installed app defines key rows and command menus, but persistence/transport is unverified |
 | Macros | UI exposed; physical support unknown | Device format and playback behavior are unknown |
