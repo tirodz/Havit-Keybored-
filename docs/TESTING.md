@@ -10,6 +10,8 @@ pnpm test
 pnpm build
 ```
 
+GitHub Actions runs the same frozen-lockfile install, unit suite, and production renderer build on Windows with Node.js 22.12.0 and 24.x. A green workflow verifies CI only; it does not verify Electron launch, installer creation, visual quality, or physical keyboard behavior.
+
 The test suite currently covers profile document validation/storage and the simulator provider's connection and error states. It does not exercise a physical keyboard, validate protocol reports, or prove compatibility with a specific device revision.
 
 ## Desktop smoke check
@@ -29,5 +31,5 @@ Before publishing a release:
 - Install and launch the generated NSIS package in a clean Windows account or VM.
 - Review app identity, installer/uninstaller behavior, file provenance, and dependency license notices.
 - Capture current screenshots and add them to the README.
-- Confirm the project license and maintainer attribution have been explicitly selected by the human maintainer.
+- Confirm the MIT license and Tiro attribution appear correctly in the installed app and release artifacts.
 - Test hardware features only after the device and protocol evidence gates in `HARDWARE_SPECIFICATION.md` and `HID_PROTOCOL.md` are met.

@@ -14,4 +14,4 @@ No vendor driver artwork, keyboard images, fonts, or other third-party visual as
 
 ## Open-source license status
 
-The repository does not currently include a project license. MIT has been proposed for maintainer review, but no license has been selected or granted. Until the maintainer adds a license, do not assume permission to reuse this project's code.
+The project is licensed under the [MIT License](LICENSE), with the copyright attribution `Copyright (c) 2026 Tiro`, as authorized by the repository owner. This project license applies to the repository's original project code and does not replace third-party notices above.

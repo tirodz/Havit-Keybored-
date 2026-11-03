@@ -29,7 +29,8 @@ Milestone 3: physical HID discovery and safe connection.
 - Added profile-local settings, JSON import/export validation, and a deterministic offline simulator.
 - Fixed manual hex color entry in Lighting Studio: partial drafts now remain editable, a complete value updates the local preview, and incomplete drafts revert on blur. Added input normalization tests.
 - Corrected simulator connectivity indicators for disconnected state; removed the unsupported notification badge; clarified that the Reactive preview is a visual accent pattern, not keypress detection; and labeled the effect controls accessibly.
-- Added the exact MIT texts for bundled Electron/React runtime components and configured Windows packaging to include runtime notices. Artifact inclusion is pending a successful package build; the project's own license remains undecided.
+- Added the exact MIT texts for bundled Electron/React runtime components and configured Windows packaging to include runtime notices. Artifact inclusion is pending a successful package build. Added the project MIT license and Tiro attribution with repository-owner authorization.
+- Added a Windows CI matrix for Node.js 22.12.0 and 24.x to run frozen-lockfile install, unit tests, and the renderer build. First hosted CI result is pending.
 - Added initial unit tests for profile validation/storage and simulator status/error handling.
 
 ## Hardware status
@@ -71,7 +72,7 @@ Milestone 3: physical HID discovery and safe connection.
 ## Next milestone
 
 1. Launch the Electron app on Windows, verify WebHID permission selection against the connected KB874L, and capture the actual descriptor/collections if access permits.
-2. Generate a complete dependency license inventory for redistributable artifacts and obtain a human maintainer decision on the project license and public attribution.
+2. Generate a complete dependency license inventory for redistributable artifacts and review the runtime notices in a successful packaged build.
 3. Capture vendor-app USB traffic for one-variable lighting changes and resolve the report fields before implementing any writes.
 4. Build and verify a Windows installer on the target platform; visually inspect the interface at multiple sizes.
 5. Add physical lighting functionality only after protocol evidence and a reversible hardware validation procedure are available.

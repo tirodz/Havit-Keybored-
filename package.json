@@ -2,6 +2,8 @@
   "name": "havit-gaming-control-center",
   "private": true,
   "version": "0.1.0",
+  "author": "Tiro",
+  "license": "MIT",
   "description": "Independent, simulator-first control center for HAVIT gaming peripherals.",
   "repository": {
     "type": "git",

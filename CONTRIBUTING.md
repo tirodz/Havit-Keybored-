@@ -10,6 +10,7 @@ Thanks for helping improve HAVIT Gaming Control Center. This is an independent c
 4. Add or update tests for changes to validation, profile behavior, or simulator state.
 5. Run `npm run build` and `npm test` locally, and describe the results in the pull request.
 6. Keep changes focused and include screenshots for visible UI changes once the desktop app can be reviewed.
+7. GitHub Actions repeats the frozen-lockfile install, tests, and renderer build on supported Node.js versions; fix CI failures before requesting review.
 
 ## Development setup
 

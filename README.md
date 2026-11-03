@@ -86,9 +86,9 @@ Report security issues privately as described in [SECURITY.md](SECURITY.md). See
 
 ## Attribution and license
 
-The repository is published under the GitHub account [`tirodz`](https://github.com/tirodz); the individual creator and maintainer's preferred public attribution has not been confirmed. No personal name, email, or legal copyright holder is inferred here. Contributors should be credited through their accepted contributions and bylines.
+Project creator and maintainer: **Tiro**, with attribution authorized by the repository owner. The repository is published under the GitHub account [`tirodz`](https://github.com/tirodz). No legal name or email address is published. Contributors are credited through their accepted contributions and bylines.
 
-This repository does not yet contain an open-source license. MIT is a candidate for maintainer review; until a human maintainer selects and adds a license, reuse and redistribution permissions should not be assumed. Third-party package notices are tracked in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+This project is licensed under the [MIT License](LICENSE). Third-party dependency notices and license texts are tracked in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Project status
 
